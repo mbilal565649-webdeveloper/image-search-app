@@ -12,7 +12,7 @@ async function searchImages() {
 
   console.log(searchTerm);
 
-  const url = `https://api.unsplash.com/search/photos?query=${searchTerm}&client_id=l8dXGulJhnuYqw9PUWJQgth8f--S0YNAiXBS7BvORSM`;
+  const url = `https://api.unsplash.com/search/photos?query=${searchTerm}&client_id=Your Access Key !...`;
 
   const response = await fetch(url);
   const data = await response.json();
