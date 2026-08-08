@@ -2,6 +2,8 @@ const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
 const imageContainer = document.getElementById("imageContainer");
 
+const apiKey = "l8dXGulJhnuYqw9PUWJQgth8f--S0YNAiXBS7BvORSM";
+
 async function searchImages() {
   const searchTerm = searchInput.value.trim();
 
@@ -17,7 +19,9 @@ async function searchImages() {
     <p class="message">Loading images... 🔄</p>
   `;
 
-  const url = `https://api.unsplash.com/search/photos?query=${searchTerm}&client_id=;
+  const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(
+    searchTerm
+  )}&client_id=${apiKey}`;
 
   try {
     const response = await fetch(url);
