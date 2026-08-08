@@ -10,26 +10,69 @@ async function searchImages() {
     return;
   }
 
-  console.log(searchTerm);
+  searchBtn.textContent = "Loading...";
+  searchBtn.disabled = true;
 
-  const url = `https://api.unsplash.com/search/photos?query=${searchTerm}&client_id=Your Access Key !...`;
+  imageContainer.innerHTML = `
+    <p class="message">Loading images... 🔄</p>
+  `;
 
-  const response = await fetch(url);
-  const data = await response.json();
+  const url = `https://api.unsplash.com/search/photos?query=${searchTerm}&client_id=;
 
-  console.log(data);
+  try {
+    const response = await fetch(url);
 
-  let images = "";
+    if (!response.ok) {
+      throw new Error("Failed to fetch images");
+    }
 
-  data.results.forEach(function (photo) {
-    images += `
+    const data = await response.json();
+
+    console.log(data);
+
+    if (data.results.length === 0) {
+      imageContainer.innerHTML = `
+        <p class="message">No images found 😔</p>
+      `;
+      return;
+    }
+
+    let images = "";
+
+    data.results.forEach(function (photo) {
+      images += `
         <div class="imageCard">
-            <img src="${photo.urls.small}" alt="${photo.alt_description || "Image"}">
+          <img 
+            src="${photo.urls.small}" 
+            alt="${photo.alt_description || "Image"}"
+          >
         </div>
-    `;
-  });
+      `;
+    });
 
-  imageContainer.innerHTML = images;
+    imageContainer.innerHTML = images;
+
+  } catch (error) {
+    console.log(error);
+
+    imageContainer.innerHTML = `
+      <p class="message">
+        Something went wrong. Please try again later. 😔
+      </p>
+    `;
+
+  } finally {
+    searchBtn.textContent = "Search";
+    searchBtn.disabled = false;
+  }
 }
 
+// Search button
 searchBtn.addEventListener("click", searchImages);
+
+// Enter key
+searchInput.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    searchImages();
+  }
+});
