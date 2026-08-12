@@ -1,11 +1,10 @@
 
-const apiKey = "l8dXGulJhnuYqw9PUWJQgth8f--S0YNAiXBS7BvORSM";
+
+const unsplashApiKey = "l8dXGulJhnuYqw9PUWJQgth8f--S0YNAiXBS7BvORSM";
 
 const searchInput = document.getElementById("searchInput");
 const searchBtn = document.getElementById("searchBtn");
 const imageContainer = document.getElementById("imageContainer");
-
-const apiKey = "l8dXGulJhnuYqw9PUWJQgth8f--S0YNAiXBS7BvORSM";
 
 async function searchImages() {
   const searchTerm = searchInput.value.trim();
@@ -22,28 +21,27 @@ async function searchImages() {
     <p class="message">Loading images... 🔄</p>
   `;
 
-<<<<<<< HEAD
-  const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(
-    searchTerm
-  )}&client_id=${apiKey}`;
-=======
-  const url = `https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchTerm)}&client_id=${apiKey}`;
->>>>>>> 45d08e6 (Add Unsplash API key)
+  const url =
+    `https://api.unsplash.com/search/photos?query=${encodeURIComponent(searchTerm)}&client_id=${unsplashApiKey}`;
 
   try {
     const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error("Failed to fetch images");
-    }
-
     const data = await response.json();
 
-    console.log(data);
+    console.log("Status:", response.status);
+    console.log("API Response:", data);
 
-    if (data.results.length === 0) {
+    if (!response.ok) {
+      throw new Error(
+        data.errors?.[0] || "Failed to fetch images"
+      );
+    }
+
+    if (!data.results || data.results.length === 0) {
       imageContainer.innerHTML = `
-        <p class="message">No images found 😔</p>
+        <p class="message">
+          No images found 😔
+        </p>
       `;
       return;
     }
@@ -53,10 +51,12 @@ async function searchImages() {
     data.results.forEach(function (photo) {
       images += `
         <div class="imageCard">
-          <img 
-            src="${photo.urls.small}" 
+
+          <img
+            src="${photo.urls.small}"
             alt="${photo.alt_description || "Image"}"
           >
+
         </div>
       `;
     });
@@ -64,7 +64,8 @@ async function searchImages() {
     imageContainer.innerHTML = images;
 
   } catch (error) {
-    console.log(error);
+
+    console.error("Image Search Error:", error);
 
     imageContainer.innerHTML = `
       <p class="message">
@@ -73,17 +74,19 @@ async function searchImages() {
     `;
 
   } finally {
+
     searchBtn.textContent = "Search";
     searchBtn.disabled = false;
+
   }
 }
 
-// Search button
 searchBtn.addEventListener("click", searchImages);
 
-// Enter key
 searchInput.addEventListener("keydown", function (event) {
+
   if (event.key === "Enter") {
     searchImages();
   }
+
 });
